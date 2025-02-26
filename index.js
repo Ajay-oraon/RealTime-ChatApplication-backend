@@ -13,9 +13,11 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://realtimechatweb.netlify.app",
+    origin: ["https://realtimechatweb.netlify.app", "http://localhost:3000"],
+    methods: ["GET", "POST"],
   },
 });
+
 
 app.use(cors());
 app.use(express.json());
@@ -35,8 +37,9 @@ io.on("connection", (socket) => {
   socket.on("send_message", async (data) => {
     const { sender, receiver, message } = data;
     const newMessage = new Messages({ sender, receiver, message });
-    socket.broadcast.emit("receive_message", data);
     await newMessage.save();
+    socket.broadcast.emit("receive_message", data);
+    
   });
 
   socket.on("disconnect", () => {
