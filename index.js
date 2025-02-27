@@ -10,6 +10,9 @@ const Messages = require("./models/Messages");
 const User = require("./models/User");
 const app = express();
 
+app.use(cors());
+app.use(express.json());
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -19,8 +22,7 @@ const io = new Server(server, {
 });
 
 
-app.use(cors());
-app.use(express.json());
+
 
 mongoose
   .connect(process.env.MONGO_URI)
